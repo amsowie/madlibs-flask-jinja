@@ -1,6 +1,6 @@
 """A madlib game that compliments its users."""
 
-from random import choice
+from random import choice, sample
 
 from flask import Flask, render_template, request
 
@@ -45,26 +45,37 @@ def show_madlib():
     """Show madlib with user input in it"""
     person = request.args.get("person")
     color = request.args.get("color")
-    noun = request.args.get("noun")
-    adjective_list = request.args.get("adjective")
+    noun1 = request.args.get("noun1")
+    noun2 = request.args.get("noun2")
+    noun3 = request.args.get("noun3")
+    verb = request.args.get("verb")
+    animal = request.args.get("animal")
+    adjective_list = request.args.getlist("adjectives")
+
+    # import pdb; pdb.set_trace()
+
     default_adjectives = ["funny", "cute", "nice", "smelly", "short"]
-    if len(adjective_list) < 3:
-        while len(adjective_list) < 3:
-            adjective_list.append(choice(default_adjectives))
-    elif len(adjective_list) > 3:
-        random_adjectives = sample(adjective_list, 3)
+
+    while len(adjective_list) < 3:
+        adjective_list.append(choice(default_adjectives))
+
+    adjective_list = sample(adjective_list, 3)
     # count = 0
     # adjectives_dict = {}
     # for adjective in range(len(adjective_list)):
     #     key = "adjective" + str(count)
     #     adjectives_dict[key] = adjective
     #     count += 1
-
-    return render_template("madlib.html",
+    options = ["madlib.html", "madlib1.html"]
+    return render_template(choice(options),
                            person=person,
                            color=color,
-                           noun=noun,
-                           adjective=adjective,)
+                           noun1=noun1,
+                           noun2=noun2,
+                           noun3=noun3,
+                           verb=verb,
+                           animal=animal,
+                           adjectives=adjective_list,)
 
 
 @app.route('/greet')
